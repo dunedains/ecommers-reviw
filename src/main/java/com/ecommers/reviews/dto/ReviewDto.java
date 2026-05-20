@@ -1,6 +1,7 @@
 package com.ecommers.reviews.dto;
 
 import jakarta.validation.constraints.*;
+import java.math.BigDecimal;
 
 public class ReviewDto {
 
@@ -39,15 +40,15 @@ public class ReviewDto {
 
     public record ProductDto(
             Long id,
-            String nombre,
-            String descripcion,
-            Double precio
+            String name,
+            String description,
+            BigDecimal price
     ) {}
 
     public record UserDto(
             Long id,
             String name,
             String email,
-            String direccion
+            String address
     ) {}
 }

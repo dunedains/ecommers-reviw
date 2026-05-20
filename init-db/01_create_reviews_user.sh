@@ -1,9 +1,0 @@
-#!/bin/bash
-sqlplus -s "sys/oracle123@localhost:1521/FREEPDB1 as sysdba" <<EOF
-CREATE USER reviews_user IDENTIFIED BY reviews_pass
-  DEFAULT TABLESPACE USERS
-  TEMPORARY TABLESPACE TEMP
-  QUOTA UNLIMITED ON USERS;
-GRANT CONNECT, RESOURCE TO reviews_user;
-EXIT;
-EOF
