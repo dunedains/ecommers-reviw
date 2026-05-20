@@ -14,10 +14,13 @@ Microservicio de reseñas de productos. Permite a los usuarios calificar y comen
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
+| `GET` | `/api/reviews` | Listar todas las reseñas |
+| `GET` | `/api/reviews/{id}` | Obtener reseña por ID |
 | `GET` | `/api/reviews/product/{productId}` | Listar reseñas de un producto |
 | `GET` | `/api/reviews/user/{userId}` | Listar reseñas de un usuario |
-| `GET` | `/api/reviews/{id}` | Obtener reseña por ID |
 | `POST` | `/api/reviews` | Crear reseña |
+| `PUT` | `/api/reviews/{id}` | Actualizar reseña completa |
+| `PATCH` | `/api/reviews/{id}` | Actualizar parcialmente (rating y/o comment) |
 | `DELETE` | `/api/reviews/{id}` | Eliminar reseña |
 
 ## Ejemplo de uso
