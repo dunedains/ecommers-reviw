@@ -4,8 +4,12 @@ import com.ecommers.reviews.dto.ReviewDto;
 import com.ecommers.reviews.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +32,16 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<ReviewDto.ReviewResponse>>> getAll() {
-        List<EntityModel<ReviewDto.ReviewResponse>> reviews = service.getAllReviews().stream()
+    public ResponseEntity<PagedModel<EntityModel<ReviewDto.ReviewResponse>>> getAll(
+            @PageableDefault(size = 20) Pageable pageable) {
+        Page<ReviewDto.ReviewResponse> page = service.getAllReviews(pageable);
+        List<EntityModel<ReviewDto.ReviewResponse>> content = page.getContent().stream()
                 .map(this::toModel)
                 .toList();
-        return ResponseEntity.ok(CollectionModel.of(reviews,
-                linkTo(methodOn(ReviewController.class).getAll()).withSelfRel()));
+        PagedModel.PageMetadata metadata = new PagedModel.PageMetadata(
+                page.getSize(), page.getNumber(), page.getTotalElements(), page.getTotalPages());
+        return ResponseEntity.ok(PagedModel.of(content, metadata,
+                linkTo(methodOn(ReviewController.class).getAll(pageable)).withSelfRel()));
     }
 
     @GetMapping("/{id}")
@@ -80,6 +88,6 @@ public class ReviewController {
                 linkTo(methodOn(ReviewController.class).getById(review.id())).withSelfRel(),
                 linkTo(methodOn(ReviewController.class).getByProduct(review.productId())).withRel("product-reviews"),
                 linkTo(methodOn(ReviewController.class).getByUser(review.userId())).withRel("user-reviews"),
-                linkTo(methodOn(ReviewController.class).getAll()).withRel("reviews"));
+                linkTo(methodOn(ReviewController.class).getAll(null)).withRel("reviews"));
     }
 }

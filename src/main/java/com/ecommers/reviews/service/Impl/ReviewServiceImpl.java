@@ -11,6 +11,8 @@ import com.ecommers.reviews.repository.ReviewRepository;
 import com.ecommers.reviews.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,9 +55,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDto.ReviewResponse> getAllReviews() {
-        log.info("Listando todas las reviews");
-        return repository.findAll().stream().map(this::toResponse).toList();
+    public Page<ReviewDto.ReviewResponse> getAllReviews(Pageable pageable) {
+        log.info("Listando reviews pagina={} size={}", pageable.getPageNumber(), pageable.getPageSize());
+        return repository.findAll(pageable).map(this::toResponse);
     }
 
     @Override
