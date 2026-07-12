@@ -1,4 +1,4 @@
-package com.ecommers.reviews.service.Impl;
+package com.ecommers.reviews.service.impl;
 
 import com.ecommers.reviews.client.ProductClient;
 import com.ecommers.reviews.client.UserClient;

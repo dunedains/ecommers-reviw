@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -66,6 +67,52 @@ class ReviewControllerTest {
         mockMvc.perform(get("/api/reviews/product/10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(10));
+    }
+
+    @Test
+    @DisplayName("GET /api/reviews/{id} -> 200")
+    void getById_devuelve200() throws Exception {
+        when(service.getReviewById(1L)).thenReturn(new ReviewResponse(1L, 10L, 2L, 5, "Bueno"));
+
+        mockMvc.perform(get("/api/reviews/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    @DisplayName("GET /api/reviews/user/{userId} -> 200")
+    void getByUser_devuelve200() throws Exception {
+        when(service.getReviewsByUserId(2L)).thenReturn(List.of(new ReviewResponse(1L, 10L, 2L, 5, "Bueno")));
+
+        mockMvc.perform(get("/api/reviews/user/2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value(2));
+    }
+
+    @Test
+    @DisplayName("PUT /api/reviews/{id} -> 200")
+    void update_devuelve200() throws Exception {
+        when(service.updateReview(eq(1L), any()))
+                .thenReturn(new ReviewResponse(1L, 10L, 2L, 4, "Regular"));
+
+        mockMvc.perform(put("/api/reviews/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"productId\":10,\"userId\":2,\"rating\":4,\"comment\":\"Regular\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rating").value(4));
+    }
+
+    @Test
+    @DisplayName("PATCH /api/reviews/{id} solo rating -> 200")
+    void patch_devuelve200() throws Exception {
+        when(service.patchReview(eq(1L), any()))
+                .thenReturn(new ReviewResponse(1L, 10L, 2L, 3, "Bueno"));
+
+        mockMvc.perform(patch("/api/reviews/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"rating\":3}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rating").value(3));
     }
 
     @Test
